@@ -13,3 +13,7 @@ function signToken(user) {
     delete userData.password
     return jwt.sign(userData, JWT_SECRET)
 }
+
+module.exports = {
+    signToken
+}
