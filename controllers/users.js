@@ -20,7 +20,8 @@ module.exports = {
 	create: (req, res) => {
 		User.create(req.body, (err, user) => {
 			if(err) return res.json({success: false, code: err.code})
-			res.json({success: true, message: "User created.", user})
+			const token = signToken(user)
+			res.json({success: true, message: "User created.", user, token})
 		})
 	},
 
@@ -42,7 +43,7 @@ module.exports = {
 	},
 	authenticate: (req, res) => {
 		// check if user exists
-		user.findOne({email: req.body.email}, (err, user) => {
+		User.findOne({email: req.body.email}, (err, user) => {
 			//if there's no user or password invalid
 			if(!user || !user.validPassword(req.body.password)){
 				return res.json({success: false, message: "Invalid credentials."})
