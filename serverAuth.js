@@ -23,7 +23,13 @@ function verifyToken(req, res, next) {
     jwt.verify(token, JWT_SECRET, (err, decodedData) => {
         // if problem with token verification, deny access:
         if(err) return releaseEvents.json({success: false, message: "Invalid token"})
-        User.findById(decodedData._id)
+        User.findById(decodedData._id, (err, user) => {
+            // if no user, deny access:
+            if(!user) return res.json({success: false, message: "Invalid token."})
+            // otherwise, add user to the req object, and continue: 
+            req.user = user
+            next()
+        })
     })
 }
 
