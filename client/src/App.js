@@ -1,17 +1,32 @@
 import React, { Component } from 'react';
-import {Link, Route, Switch} from 'react-router-dom'
-import Home from './views/Home.js'
-import Login from './views/Login.js'
+import {Link, Route, Switch, Redirect} from 'react-router-dom';
+import httpClient from './httpClient.js';
+import Home from './views/Home.js';
+import Login from './views/Login.js';
+import Signup from './views/Signup.js';
 
 class App extends Component {
 
   state = {
-    currentUser: null 
+    currentUser: httpClient.getCurrentUser() 
+  }
+
+  onLoginSuccess(user){
+    this.setState({currentUser: user})
   }
 
   render() {
+    const {currentUser} = this.state 
+    
     return (
+
       <div className="App">
+          {currentUser 
+            ? (
+              <div>{currentUser.name}</div>
+            )
+            : null
+          }
         <div>
           <Link to="/">Home</Link>
           <Link to="/vip">VIP</Link>
@@ -22,8 +37,25 @@ class App extends Component {
 
         <Switch>
             <Route path="/login" render={(routeProps) => {
-                return <Login {...routeProps}/>
+                return <Login {...routeProps} onLoginSuccess={this.onLoginSuccess.bind(this)}/>
             }} />
+            
+            <Route path="/signup" render={(routeProps) => {
+                return <Signup {...routeProps} onSignupSuccess={this.onLoginSuccess.bind(this)}/>
+            }} />
+            
+            <Route path="/logout" render={() => {
+                httpClient.logOut()
+                setTimeout(() => { this.setState({currentUser: null}) })
+                return <Redirect to="/login" />
+            }} />
+
+            <Route path="/vip" render={() => {
+                return currentUser 
+                ? <h1>VIP, Welcome</h1>
+                : <Redirect to="/login" />
+            }} />
+
             <Route path="/" component={Home} />
         </Switch>
       </div>
