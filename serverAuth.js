@@ -34,5 +34,6 @@ function verifyToken(req, res, next) {
 }
 
 module.exports = {
-    signToken
+    signToken,
+    verifyToken
 }

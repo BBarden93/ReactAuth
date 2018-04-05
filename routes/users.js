@@ -1,7 +1,8 @@
 const
 	express = require('express'),
 	usersRouter = new express.Router(),
-	usersCtrl = require('../controllers/users.js')
+	usersCtrl = require('../controllers/users.js'),
+	{verifyToken} = require('../serverAuth.js')
 
 usersRouter.route('/')
 	.get(usersCtrl.index)
@@ -10,7 +11,7 @@ usersRouter.route('/')
 usersRouter.post('/login', usersCtrl.authenticate)
 
 // Putting middleware here will affect all routes below...
-// userRouter.use(verifyToken)
+usersRouter.use(verifyToken)
 
 usersRouter.route('/:id')
 	.get(usersCtrl.show)
