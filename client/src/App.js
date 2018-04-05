@@ -21,8 +21,8 @@ class App extends Component {
         </div>
 
         <Switch>
-            <Route path="/login" render={() => {
-                return <Login />
+            <Route path="/login" render={(routeProps) => {
+                return <Login {...routeProps}/>
             }} />
             <Route path="/" component={Home} />
         </Switch>
